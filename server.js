@@ -6,32 +6,33 @@ app.use(express.static(__dirname+'/public'));
 app.use(express.json());
 app.use(express.urlencoded({extends: false}));
 
-const addNumbers = (number1,number2) => {
-    var num1 = parseInt(number1);
-    var num2 = parseInt(number2);
-    var result = num1 + num2;
-    return result;
-}
+const cardList = [
 
-app.get("/addTwoNumbers",(req,res)=>{
-    var number1 = req.query.number1;
-    var number2 = req.query.number2;
-    var result = addNumbers(number1,number2);   
-    res.json({statusCode: 200, data: result, message: 'Success'})
-})
+    {
+        title: "The Red Giant Star",
+        image: "images/red giant.png",
 
-const multiplyNumbers = (number1,number2) => {
-    var num1 = parseInt(number1);
-    var num2 = parseInt(number2);
-    var result = num1 * num2;
-    return result;
-}
+        link: "About Red Giant Star",
 
-app.get("/multiplyTwoNumbers",(req,res)=>{
-    var number1 = req.query.number1;
-    var number2 = req.query.number2;
-    var result = multiplyNumbers(number1,number2);   
-    res.json({statusCode: 200, data: result, message: 'Success'})
+        description: "When a star runs of hydrogen fuel in its core, it has to adjust and find alternate ways to power itself - one of the ways it does this is to start burning hydrogen outside the core and this makes the star swell up. The result is a cool, puffy red giant star. "
+
+    },
+    {
+        title: "The White Dwarf Star",
+        image: "images/White_Dwarf.png",
+
+        link: "About White Dwarf Star",
+
+        description: "When a star about the size of our Sun, or a little larger, has burnt all the material it can, it collapses into a new type of object - a kind of giant crystal supported by the wonders of quantum physics (specifically the degeneracy pressure of electrons) rather than its own heat. "
+
+    }
+
+]
+
+app.get('/api/projects',(req,res) => {
+
+    res.json({statusCode: 200, data: cardList, message:"Success"})
+
 })
 
 var port = process.env.port || 3000;
