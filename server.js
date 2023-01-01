@@ -1,47 +1,17 @@
 var express = require('express');
 var app = express();
 var cors = require('cors')
-
-const MongoClient = require('mongoDb').MongoClient;
-
-const uri = 'mongodb+srv://rp097:rp123@cluster0.5aeffbr.mongodb.net/?retryWrites=true&w=majority'
-const client =  new MongoClient(uri,{ useNewUrlParser: true })
+let projectCollection;
+let dbConnect = require("./dbConnect");
+let projectRoutes = require("./routes/projectRoutes");
+const { application } = require('express');
 
 app.use(express.static(__dirname+'/public'));
 app.use(express.json());
 app.use(express.urlencoded({extends: false}));
 app.use(cors())
+app.use('/api/projects',projectRoutes)
 
-const createCollection = (collectionName) => {
-    client.connect((err,db) => {
-        projectCollection = client.db().collection(collectionName);
-        if(!err) {
-            console.log('MongoDB Connected')
-        }
-        else {
-            console.log("DB Error: ", err);
-            process.exit(1);
-        }
-    })
-}
-
-app.post('/api/projects',(req,res) => {
-    console.log("New Project added", req.body)
-    var newProject = req.body;
-    insertProjects(newProject,(err,result) => {
-        if(err) {
-            res.json({statusCode: 400, message: err})
-        }
-        else {
-
-            res.json({statusCode: 200, message:"Project Successfully added", data: result})
-        }
-    })
-})
-
-const insertProjects = (project,callback) => {
-    projectCollection.insert(project,callback);
-}
 
 /* const cardList = [
     {
@@ -58,24 +28,10 @@ const insertProjects = (project,callback) => {
     }
 ] */
 
-app.get('/api/projects',(req,res) => {
-    getProjects((err,result) => {
-        if(err) {
-            res.json({statusCode: 400, message: err})
-        }
-        else {
-            res.json({statusCode: 200, message:"Success", data: result})
-        }
-    })
-})
-
-const getProjects = (callback) => {
-    projectCollection.find({}).toArray(callback);
-}
 
 var port = process.env.port || 3000;
 
 app.listen(port,()=>{
     console.log("App is listening to http://localhost:"+port);
-    createCollection("stars")
+    //createCollection("stars")
 });
